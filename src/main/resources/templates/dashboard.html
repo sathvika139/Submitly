@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #ae0bc7;
+        --primary-hover: #ca38a3;
+        --bg-gradient: linear-gradient(
+          135deg,
+          #9a4b74 0%,
+          #5a3280 50%,
+          #553887 100%
+        );
+        --glass-bg: rgba(240, 230, 230, 0.763);
+        --text-main: #000000;
+        --text-muted: #4b5563;
+      }
+
+      body {
+        background: var(--bg-gradient);
+        background-attachment: fixed;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: var(--text-main);
+      }
+
+      /* Glass Container */
+      .dashboard-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        width: 95%;
+        max-width: 1250px;
+        padding: 40px;
+        margin: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      /* Header Area */
+      .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .header-section h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(to right, #070073, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* Search Bar Styling */
+      .search-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      #dashboardSearch {
+        padding: 10px 40px 10px 15px;
+        border-radius: 25px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.5);
+        color: #000;
+        outline: none;
+        width: 220px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      #dashboardSearch:focus {
+        width: 300px;
+        border-color: var(--primary);
+        box-shadow: 0 0 10px rgba(174, 11, 199, 0.2);
+      }
+
+      .search-icon {
+        position: absolute;
+        right: 15px;
+        font-size: 14px;
+        pointer-events: none;
+      }
+
+      .clear-btn {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        display: none;
+        color: #666;
+      }
+
+      /* Buttons */
+      .btn-export {
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+        border: none;
+        cursor: pointer;
+        color: white;
+      }
+
+      .pdf {
+        background-color: #d20075;
+      }
+      .excel {
+        background-color: #087e9b;
+      }
+      .btn-export:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
+
+      /* Table */
+      .table-container {
+        overflow-x: auto;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead th {
+        background-color: #a1a1aa;
+        color: #333;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 12px;
+        padding: 16px;
+        text-align: left;
+      }
+
+      td {
+        padding: 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 14px;
+      }
+
+      .project-link {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: rgba(174, 11, 199, 0.1);
+        font-size: 13px;
+      }
+
+      .btn-action {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        margin-right: 4px;
+      }
+
+      .edit {
+        background: rgba(168, 85, 247, 0.1);
+        color: #a855f7;
+      }
+      .delete {
+        background: rgba(244, 63, 94, 0.1);
+        color: #f43f5e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-card">
+      <div class="header-section">
+        <h2>Student Submissions</h2>
+
+        <div class="header-actions">
+          <div class="search-wrap">
+            <input
+              type="text"
+              id="dashboardSearch"
+              placeholder="Search by name or email..."
+              onkeyup="handleSearchInput()"
+            />
+            <span class="search-icon" id="searchIcon">🔍</span>
+            <button class="clear-btn" id="clearSearch" onclick="clearSearch()">
+              ×
+            </button>
+          </div>
+
+          <button class="btn-export pdf">Export PDF</button>
+          <button class="btn-export excel">Export Excel</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Section</th>
+              <th>Branch</th>
+              <th>Frontend</th>
+              <th>Backend</th>
+              <th>GitHub</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="user : ${users}">
+              <td th:text="${user.name}" style="font-weight: 600"></td>
+              <td th:text="${user.email}" style="color: #666"></td>
+              <td th:text="${user.section}"></td>
+              <td th:text="${user.branch}"></td>
+              <td>
+                <a
+                  class="project-link"
+                  th:href="${user.frontendLink}"
+                  target="_blank"
+                  >View</a
+                >
+              </td>
+              <td>
+                <a
+                  class="project-link"
+                  th:href="${user.backendLink}"
+                  target="_blank"
+                  >View</a
+                >
+              </td>
+              <td>
+                <a
+                  class="project-link"
+                  th:href="${user.githubLink}"
+                  target="_blank"
+                  style="background: #1e293b; color: white"
+                  >Repo</a
+                >
+              </td>
+              <td>
+                <a
+                  th:href="@{/edit/{id}(id=${user.id})}"
+                  class="btn-action edit"
+                  >Edit</a
+                >
+                <a
+                  th:href="@{/delete/{id}(id=${user.id})}"
+                  class="btn-action delete"
+                  onclick="return confirm('Delete this record?');"
+                  >Delete</a
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      function handleSearchInput() {
+        const input = document.getElementById("dashboardSearch");
+        const clearBtn = document.getElementById("clearSearch");
+        const searchIcon = document.getElementById("searchIcon");
+
+        if (input.value.length > 0) {
+          clearBtn.style.display = "block";
+          searchIcon.style.display = "none";
+        } else {
+          clearBtn.style.display = "none";
+          searchIcon.style.display = "block";
+        }
+        filterTable();
+      }
+
+      function filterTable() {
+        const input = document.getElementById("dashboardSearch");
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          const name = row.cells[0].textContent.toLowerCase();
+          const email = row.cells[1].textContent.toLowerCase();
+          row.style.display =
+            name.includes(filter) || email.includes(filter) ? "" : "none";
+        });
+      }
+
+      function clearSearch() {
+        const input = document.getElementById("dashboardSearch");
+        input.value = "";
+        handleSearchInput();
+        input.focus();
+      }
+    </script>
+  </body>
+</html>

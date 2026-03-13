@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Submission</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="heading">Project Submission</div>
+      <div class="subtitle">Submit your project details</div>
+
+      <form
+        class="form"
+        th:action="@{/submit}"
+        th:object="${user}"
+        method="post"
+      >
+        <input type="hidden" th:field="*{id}" />
+
+        <input
+          required
+          class="input"
+          type="text"
+          th:field="*{name}"
+          placeholder="Full Name *"
+        />
+        <input
+          required
+          class="input"
+          type="email"
+          th:field="*{email}"
+          placeholder="Email Address *"
+        />
+        <input
+          required
+          class="input"
+          type="text"
+          th:field="*{section}"
+          placeholder="Section *"
+        />
+        <input
+          required
+          class="input"
+          type="text"
+          th:field="*{branch}"
+          placeholder="Branch *"
+        />
+        <input
+          required
+          class="input"
+          type="url"
+          th:field="*{frontendLink}"
+          placeholder="Frontend Link *"
+        />
+        <input
+          required
+          class="input"
+          type="url"
+          th:field="*{backendLink}"
+          placeholder="Backend Link *"
+        />
+        <input
+          required
+          class="input"
+          type="url"
+          th:field="*{githubLink}"
+          placeholder="GitHub Link *"
+        />
+
+        <button class="register-button" type="submit">Submit Project</button>
+      </form>
+    </div>
+  </body>
+</html>
