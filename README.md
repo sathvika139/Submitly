@@ -3,7 +3,7 @@
 A modern, responsive Student Project Submission system built with **Spring Boot** and **Thymeleaf**. This application features a high-performance dashboard with real-time searching and a glassmorphism UI.
 
 ## 📸 Screenshots
-![Dashboard Overview](./assets/dashboard_main.png)
+![Dashboard Overview](./assets/Dashboard.png)
 *The main dashboard shows real-time search and student records.*
 
 ## ✨ Features
